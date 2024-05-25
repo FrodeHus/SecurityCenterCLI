@@ -42,7 +42,7 @@ internal class DefenderApiService(TokenClient tokenClient, IHttpClientFactory ht
 
     private async Task<HttpClient> GetAuthenticatedClient()
     {
-        var tokenResult = await _tokenClient.GetAccessTokenSilently();
+        var tokenResult = await _tokenClient.GetAccessTokenSilently(["https://api.securitycenter.microsoft.com/.default"]);
         if (tokenResult.IsFailure)
         {
             throw new InvalidOperationException(tokenResult.Error!.ToString());

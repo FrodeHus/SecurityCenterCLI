@@ -10,7 +10,7 @@ namespace SecurityCenterCli.Authentication
     {
         private readonly Configuration _configuration = configuration;
 
-        public async Task<Result<string>> GetAccessTokenSilently()
+        public async Task<Result<string>> GetAccessTokenSilently(string[] scopes)
         {
             if (_configuration.Credential is null || _configuration.Credential.ClientId is null || _configuration.Credential.TenantId is null)
             {
@@ -31,7 +31,7 @@ namespace SecurityCenterCli.Authentication
                 return new Error(ErrorCode.AuthenticationError, "Please login first");
             }
 
-            var result = await client.AcquireTokenSilent(["https://api.securitycenter.microsoft.com/.default"], accounts.First()).ExecuteAsync();
+            var result = await client.AcquireTokenSilent(scopes, accounts.First()).ExecuteAsync();
             return result.AccessToken;
         }
 

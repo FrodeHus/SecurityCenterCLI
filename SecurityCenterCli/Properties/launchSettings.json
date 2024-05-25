@@ -2,7 +2,7 @@
   "profiles": {
     "SecurityCenterCli": {
       "commandName": "Project",
-      "commandLineArgs": "device --include-vulnerabilities",
+      "commandLineArgs": "secure-score",
       "workingDirectory": "C:\\src\\github.com\\frodehus\\SecurityCenterCli\\SecurityCenterCli"
     }
   }

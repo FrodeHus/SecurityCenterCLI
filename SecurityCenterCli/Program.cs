@@ -14,10 +14,12 @@ builder.Logging.AddFilter("System.Net.Http", LogLevel.Warning);
 builder.Services.AddTransient(s => Configuration.Load());
 builder.Services.AddTransient<TokenClient>();
 builder.Services.AddTransient<DefenderApiService>();
+builder.Services.AddTransient<GraphService>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
 app.AddCommands<AccountCommands>();
 app.AddCommands<ConfigCommands>();
 app.AddCommands<DefenderCommands>();
+app.AddCommands<SecureScoreCommands>();
 app.Run();

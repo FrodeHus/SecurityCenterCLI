@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SecurityCenterCli": {
+      "commandName": "Project",
+      "commandLineArgs": "device --include-vulnerabilities",
+      "workingDirectory": "C:\\src\\github.com\\frodehus\\SecurityCenterCli\\SecurityCenterCli"
+    }
+  }
+}

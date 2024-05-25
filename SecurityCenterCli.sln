@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.34909.67
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityCenterCli", "SecurityCenterCli\SecurityCenterCli.csproj", "{DBD05F25-26E3-4C50-A023-01C7F048B70C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBD05F25-26E3-4C50-A023-01C7F048B70C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBD05F25-26E3-4C50-A023-01C7F048B70C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBD05F25-26E3-4C50-A023-01C7F048B70C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBD05F25-26E3-4C50-A023-01C7F048B70C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D68259ED-DDC2-45E3-A6C2-F21B78C7B168}
+	EndGlobalSection
+EndGlobal

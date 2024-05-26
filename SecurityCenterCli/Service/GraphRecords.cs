@@ -7,7 +7,8 @@ internal record SecureScore(
      [property: JsonPropertyName("activeUserCount")] int ActiveUserCount,
      [property: JsonPropertyName("currentScore")] double CurrentScore,
      [property: JsonPropertyName("maxScore")] double MaxScore,
-     [property: JsonPropertyName("createdDateTime")] DateTime CreatedDate
+     [property: JsonPropertyName("createdDateTime")] DateTime CreatedDate,
+     [property: JsonPropertyName("controlScores")] SecurityControlScore[] ControlScores
     );
 
 internal record SecurityControlProfile(
@@ -26,4 +27,15 @@ internal record SecurityControlProfile(
     [property: JsonPropertyName("threats")] string[] Threats,
     [property: JsonPropertyName("tier")] string Tier,
     [property: JsonPropertyName("userImpact")] string UserImpact
+    );
+
+internal record SecurityControlScore(
+    [property: JsonPropertyName("controlCategory")] string ControlCategory,
+    [property: JsonPropertyName("controlName")] string ControlName,
+    [property: JsonPropertyName("description")] string Description,
+    [property: JsonPropertyName("score")] double Score,
+    [property: JsonPropertyName("scoreInPercentage")] double ScoreInPercentage,
+    [property: JsonPropertyName("lastSynced")] DateTime LastSynced,
+    [property: JsonPropertyName("implementationStatus")] string ImplementationStatus,
+    [property: JsonPropertyName("on")] string On
     );

@@ -16,6 +16,7 @@ internal sealed class GraphService(TokenClient tokenClient, IHttpClientFactory h
     {
         var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/secureScores?$top={days}");
+        var test = await result.Content.ReadAsStringAsync();
         var secureScores = await result.Content.ReadFromJsonAsync<ODataResponse<SecureScore>>();
         return secureScores?.Value;
     }

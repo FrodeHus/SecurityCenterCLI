@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Text;
+
 using Cocona;
 using SecurityCenterCli.Authentication;
 using SecurityCenterCli.Infrastructure;
@@ -39,9 +40,14 @@ internal class TokenCommands(TokenClient tokenClient, Configuration configuratio
 
         if (decode)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(result.Value);
-            Console.WriteLine(token);
+            var segments = result.Value.Split('.');
+            if (segments.Length != 3)
+            {
+                Console.WriteLine("Invalid JWT token");
+                return;
+            }
+            var payload = Convert.FromBase64String(AddPadding(segments[1]));
+            Console.WriteLine(Encoding.UTF8.GetString(payload));
             return;
         }
         else
@@ -55,5 +61,15 @@ internal class TokenCommands(TokenClient tokenClient, Configuration configuratio
     {
         _config.Credential = new Credential(tenantId, clientId, clientSecret);
         _config.Save();
+    }
+
+    private string AddPadding(string base64)
+    {
+        while (base64.Length % 4 != 0)
+        {
+            base64 += "=";
+        }
+
+        return base64;
     }
 }

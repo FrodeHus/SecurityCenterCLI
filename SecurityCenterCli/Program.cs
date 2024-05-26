@@ -21,5 +21,5 @@ var app = builder.Build();
 app.AddCommands<AccountCommands>();
 app.AddCommands<ConfigCommands>();
 app.AddCommands<DefenderCommands>();
-app.AddCommands<SecureScoreCommands>();
+app.AddCommands<GraphCommands>();
 app.Run();

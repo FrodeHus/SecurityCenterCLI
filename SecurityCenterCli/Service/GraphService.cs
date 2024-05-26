@@ -5,30 +5,38 @@ using SecurityCenterCli.Common;
 
 namespace SecurityCenterCli.Service;
 
-internal class GraphService(TokenClient tokenClient, IHttpClientFactory httpClientFactory)
+internal sealed class GraphService(TokenClient tokenClient, IHttpClientFactory httpClientFactory) : BaseService(tokenClient, httpClientFactory)
 {
     private readonly TokenClient _tokenClient = tokenClient;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private const string ApiUrl = "https://graph.microsoft.com/beta/security";
+    private readonly string[] Scopes = ["https://graph.microsoft.com/.default"];
 
     internal async Task<Result<IEnumerable<SecureScore>?>> GetSecureScores(int days = 5)
     {
-        var client = await GetAuthenticatedClient();
+        var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/secureScores?$top={days}");
         var secureScores = await result.Content.ReadFromJsonAsync<ODataResponse<SecureScore>>();
         return secureScores?.Value;
     }
 
-    private async Task<HttpClient> GetAuthenticatedClient()
+    internal async Task<Result<IEnumerable<SecurityControlProfile>?>> GetSecurityControlProfiles()
     {
-        var tokenResult = await _tokenClient.GetAccessTokenSilently(["https://graph.microsoft.com/.default"]);
-        if (tokenResult.IsFailure)
+        var client = await GetAuthenticatedClient(Scopes);
+        var profiles = new List<SecurityControlProfile>();
+        var url = $"{ApiUrl}/secureScoreControlProfiles";
+        do
         {
-            throw new InvalidOperationException(tokenResult.Error!.ToString());
-        }
+            var response = await client.GetAsync(url);
+            var result = await response.Content.ReadFromJsonAsync<ODataResponse<SecurityControlProfile>>();
+            if (result?.Value is not null)
+            {
+                profiles.AddRange(result.Value);
+            }
+            url = result?.NextLink ?? string.Empty;
+        } while (!string.IsNullOrEmpty(url));
 
-        var client = _httpClientFactory.CreateClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenResult.Value);
-        return client;
+        return profiles;
     }
+
 }

@@ -5,14 +5,15 @@ using SecurityCenterCli.Common;
 
 namespace SecurityCenterCli.Service;
 
-internal class DefenderApiService(TokenClient tokenClient, IHttpClientFactory httpClientFactory)
+internal sealed class DefenderApiService(TokenClient tokenClient, IHttpClientFactory httpClientFactory) : BaseService(tokenClient, httpClientFactory)
 {
     private readonly TokenClient _tokenClient = tokenClient;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private const string ApiUrl = "https://api-eu.securitycenter.microsoft.com/api";
+    private readonly string[] Scopes = ["https://api.securitycenter.microsoft.com/.default"];
     internal async Task<Result<IEnumerable<Device>?>> GetDevices(string? nameFilter)
     {
-        var client = await GetAuthenticatedClient();
+        var client = await GetAuthenticatedClient(Scopes);
         var filter = string.Empty;
         if (nameFilter is not null)
         {
@@ -25,7 +26,7 @@ internal class DefenderApiService(TokenClient tokenClient, IHttpClientFactory ht
 
     internal async Task<Result<IEnumerable<DeviceVulnerability>?>> GetDeviceVulnerabilities(string deviceId)
     {
-        var client = await GetAuthenticatedClient();
+        var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/machines/{deviceId}/vulnerabilities");
         var vulnerabilities = await result.Content.ReadFromJsonAsync<ODataResponse<DeviceVulnerability>>();
         return vulnerabilities?.Value;
@@ -33,23 +34,10 @@ internal class DefenderApiService(TokenClient tokenClient, IHttpClientFactory ht
 
     internal async Task<Result<IEnumerable<DeviceRecommendation>?>> GetDeviceRecommendations(string deviceId)
     {
-        var client = await GetAuthenticatedClient();
+        var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/machines/{deviceId}/recommendations");
         var recommendations = await result.Content.ReadFromJsonAsync<ODataResponse<DeviceRecommendation>>();
         return recommendations?.Value;
     }
 
-
-    private async Task<HttpClient> GetAuthenticatedClient()
-    {
-        var tokenResult = await _tokenClient.GetAccessTokenSilently(["https://api.securitycenter.microsoft.com/.default"]);
-        if (tokenResult.IsFailure)
-        {
-            throw new InvalidOperationException(tokenResult.Error!.ToString());
-        }
-
-        var client = _httpClientFactory.CreateClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenResult.Value);
-        return client;
-    }
 }

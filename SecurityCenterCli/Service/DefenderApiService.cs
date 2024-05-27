@@ -2,6 +2,7 @@
 
 using SecurityCenterCli.Authentication;
 using SecurityCenterCli.Common;
+using SecurityCenterCli.Infrastructure;
 
 namespace SecurityCenterCli.Service;
 
@@ -20,7 +21,7 @@ internal sealed class DefenderApiService(TokenClient tokenClient, IHttpClientFac
             filter = $"$filter=startswith(computerDnsName,'{nameFilter}')";
         }
         var result = await client.GetAsync($"{ApiUrl}/machines?{filter}");
-        var devices = await result.Content.ReadFromJsonAsync<ODataResponse<Device>>();
+        var devices = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.ODataResponseDevice);
         return devices?.Value;
     }
 
@@ -28,7 +29,7 @@ internal sealed class DefenderApiService(TokenClient tokenClient, IHttpClientFac
     {
         var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/machines/{deviceId}/vulnerabilities");
-        var vulnerabilities = await result.Content.ReadFromJsonAsync<ODataResponse<DeviceVulnerability>>();
+        var vulnerabilities = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.ODataResponseDeviceVulnerability);
         return vulnerabilities?.Value;
     }
 
@@ -36,7 +37,7 @@ internal sealed class DefenderApiService(TokenClient tokenClient, IHttpClientFac
     {
         var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/machines/{deviceId}/recommendations");
-        var recommendations = await result.Content.ReadFromJsonAsync<ODataResponse<DeviceRecommendation>>();
+        var recommendations = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.ODataResponseDeviceRecommendation);
         return recommendations?.Value;
     }
 

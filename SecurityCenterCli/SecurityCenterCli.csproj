@@ -5,15 +5,25 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-      <PublishSingleFile>true</PublishSingleFile>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishAot>True</PublishAot>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cocona" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.61.1" />
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.61.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuiCLI\QuiCLI\QuiCLI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="QuiCLI">
+      <HintPath>..\..\QuiCLI\QuiCLI\bin\Debug\net8.0\QuiCLI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

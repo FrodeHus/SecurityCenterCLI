@@ -38,7 +38,7 @@ public class Configuration
         if (File.Exists(config.AppSettingsFile))
         {
             var json = File.ReadAllText(config.AppSettingsFile);
-            var configData = JsonSerializer.Deserialize<Configuration>(json);
+            var configData = JsonSerializer.Deserialize(json, SourceGenerationContext.Default.Configuration);
             if (configData is not null)
             {
                 return configData;
@@ -49,7 +49,7 @@ public class Configuration
 
     public void Save()
     {
-        var json = JsonSerializer.Serialize(this);
+        var json = JsonSerializer.Serialize(this, SourceGenerationContext.Default.Configuration);
         File.WriteAllText(AppSettingsFile, json);
     }
 }

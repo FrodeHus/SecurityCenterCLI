@@ -1,10 +1,7 @@
-﻿using Cocona;
+﻿
+namespace SecurityCenterCli.Command;
 
-namespace SecurityCenterCli.Command
+internal class ConfigCommands
 {
-    internal class ConfigCommands
-    {
-        
-    }
-
+    
 }

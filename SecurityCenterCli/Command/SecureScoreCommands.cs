@@ -1,16 +1,17 @@
 ﻿using System.Text.Json;
 
-using Cocona;
+using QuiCLI.Command;
 
+using SecurityCenterCli.Infrastructure;
 using SecurityCenterCli.Service;
 
 namespace SecurityCenterCli.Command;
 
-internal class SecureScore(GraphService graphService)
+internal class SecureScoreCommands(GraphService graphService)
 {
     private readonly GraphService _graphService = graphService;
 
-    [Command("list", Description = "Retrieve secure scores")]
+    [Command("list", "Retrieve secure scores")]
     public async Task SecureScoreList(int days = 5)
     {
         var result = await _graphService.GetSecureScores(days);
@@ -21,11 +22,11 @@ internal class SecureScore(GraphService graphService)
             return;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.SecureScoreArray);
         Console.WriteLine(json);
     }
 
-    [Command("profiles", Description = "Retrieve security control profiles")]
+    [Command("profiles", "Retrieve security control profiles")]
     public async Task GetSecurityControlProfiles()
     {
         var result = await _graphService.GetSecurityControlProfiles();
@@ -36,7 +37,7 @@ internal class SecureScore(GraphService graphService)
             return;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.SecurityControlProfileArray);
         Console.WriteLine(json);
     }
 

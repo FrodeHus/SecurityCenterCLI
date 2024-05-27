@@ -2,6 +2,7 @@
 
 using SecurityCenterCli.Authentication;
 using SecurityCenterCli.Common;
+using SecurityCenterCli.Infrastructure;
 
 namespace SecurityCenterCli.Service;
 
@@ -17,7 +18,7 @@ internal sealed class GraphService(TokenClient tokenClient, IHttpClientFactory h
         var client = await GetAuthenticatedClient(Scopes);
         var result = await client.GetAsync($"{ApiUrl}/secureScores?$top={days}");
         var test = await result.Content.ReadAsStringAsync();
-        var secureScores = await result.Content.ReadFromJsonAsync<ODataResponse<SecureScore>>();
+        var secureScores = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.ODataResponseSecureScore);
         return secureScores?.Value;
     }
 
@@ -29,7 +30,7 @@ internal sealed class GraphService(TokenClient tokenClient, IHttpClientFactory h
         do
         {
             var response = await client.GetAsync(url);
-            var result = await response.Content.ReadFromJsonAsync<ODataResponse<SecurityControlProfile>>();
+            var result = await response.Content.ReadFromJsonAsync(SourceGenerationContext.Default.ODataResponseSecurityControlProfile);
             if (result?.Value is not null)
             {
                 profiles.AddRange(result.Value);

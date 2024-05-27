@@ -2,7 +2,7 @@
   "profiles": {
     "SecurityCenterCli": {
       "commandName": "Project",
-      "commandLineArgs": "secure-score list",
+      "commandLineArgs": "login",
       "workingDirectory": "C:\\src\\github.com\\frodehus\\SecurityCenterCli\\SecurityCenterCli"
     }
   }

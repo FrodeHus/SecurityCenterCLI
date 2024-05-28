@@ -20,10 +20,4 @@
     <ProjectReference Include="..\QuiCLI\QuiCLI\QuiCLI.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="QuiCLI">
-      <HintPath>..\..\QuiCLI\QuiCLI\bin\Debug\net8.0\QuiCLI.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

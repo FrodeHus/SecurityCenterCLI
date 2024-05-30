@@ -37,7 +37,7 @@ internal class SecureScoreCommands(GraphService graphService)
             return;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.SecurityControlProfileArray);
+        var json = JsonSerializer.Serialize(result.Value!.ToArray(), SourceGenerationContext.Default.SecurityControlProfileArray);
         Console.WriteLine(json);
     }
 

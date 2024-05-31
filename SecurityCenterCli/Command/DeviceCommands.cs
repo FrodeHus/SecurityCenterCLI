@@ -12,47 +12,41 @@ internal class DeviceCommands(DefenderApiService defenderService)
     private readonly DefenderApiService _defenderService = defenderService;
 
     [Command("list")]
-    public async Task DeviceList(string? nameFilter)
+    public async Task<object> DeviceList(string? nameFilter)
     {
         var result = await _defenderService.GetDevices(nameFilter);
 
         if (result.IsFailure)
         {
-            Console.WriteLine(result.Error);
-            return;
+            return result.Error!;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceArray);
-        Console.WriteLine(json);
+        return JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceArray);
     }
 
     [Command("vulnerabilities",  "Retrieve all security vulnerabilities for device")]
-    public async Task VulnerabilityList(string deviceId)
+    public async Task<object> VulnerabilityList(string deviceId)
     {
         var result = await _defenderService.GetDeviceVulnerabilities(deviceId);
 
         if (result.IsFailure)
         {
-            Console.WriteLine(result.Error);
-            return;
+            return result.Error!;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceVulnerabilityArray);
-        Console.WriteLine(json);
+        return JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceVulnerabilityArray);
     }
 
     [Command("recommendations", "Retrieve all security recommendations for device")]
-    public async Task RecommendationList(string deviceId)
+    public async Task<object> RecommendationList(string deviceId)
     {
         var result = await _defenderService.GetDeviceRecommendations(deviceId);
 
         if (result.IsFailure)
         {
-            Console.WriteLine(result.Error);
-            return;
+            return result.Error!;
         }
 
-        var json = JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceRecommendationArray);
-        Console.WriteLine(json);
+        return JsonSerializer.Serialize(result.Value, SourceGenerationContext.Default.DeviceRecommendationArray);
     }
 }

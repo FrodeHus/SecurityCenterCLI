@@ -13,13 +13,12 @@ internal class TokenCommands(TokenClient tokenClient, Configuration configuratio
     private readonly Configuration _config = configuration;
 
     [Command("access-token", "Get the current access token")]
-    public async Task<string> GetAccessToken(bool decode, string resource = "https://api.securitycenter.microsoft.com/.default")
+    public async Task<object> GetAccessToken(bool decode, string resource = "https://api.securitycenter.microsoft.com/.default")
     {
         var result = await _tokenClient.GetAccessTokenSilently([resource]);
         if (result.IsFailure)
         {
-            Console.WriteLine(result.Error);
-            return string.Empty;
+            return result.Error!;
         }
 
         if (decode)

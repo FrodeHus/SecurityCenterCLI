@@ -13,13 +13,13 @@ internal class TokenCommands(TokenClient tokenClient, Configuration configuratio
     private readonly Configuration _config = configuration;
 
     [Command("access-token", "Get the current access token")]
-    public async Task GetAccessToken(bool decode, string resource = "https://api.securitycenter.microsoft.com/.default")
+    public async Task<string> GetAccessToken(bool decode, string resource = "https://api.securitycenter.microsoft.com/.default")
     {
         var result = await _tokenClient.GetAccessTokenSilently([resource]);
         if (result.IsFailure)
         {
             Console.WriteLine(result.Error);
-            return;
+            return string.Empty;
         }
 
         if (decode)
@@ -28,15 +28,15 @@ internal class TokenCommands(TokenClient tokenClient, Configuration configuratio
             if (segments.Length != 3)
             {
                 Console.WriteLine("Invalid JWT token");
-                return;
+                return string.Empty;
             }
             var payload = Convert.FromBase64String(AddPadding(segments[1]));
-            Console.WriteLine(Encoding.UTF8.GetString(payload));
-            return;
+            return Encoding.UTF8.GetString(payload);
+
         }
         else
         {
-            Console.WriteLine(result.Value);
+            return result.Value;
         }
     }
 

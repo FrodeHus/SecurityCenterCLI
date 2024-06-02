@@ -19,7 +19,10 @@ public class Configuration
     {
         get
         {
-            return new StorageCreationPropertiesBuilder("tokenCache", ApplicationHome).Build();
+            var builder = new StorageCreationPropertiesBuilder("tokenCache", ApplicationHome);
+            builder.WithLinuxUnprotectedFile();
+            builder.WithMacKeyChain("SecurityCenterCLI", "tokenCache");
+            return builder.Build();
         }
     }
 

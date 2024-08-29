@@ -15,7 +15,7 @@ builder.Services.AddTransient<DefenderApiService>();
 builder.Services.AddTransient<GraphService>();
 builder.Services.AddHttpClient();
 
-builder.Commands.Add<AccountCommands>().WithCommand("token", x => x.Login);
+builder.Commands.Add<AccountCommands>().WithCommand("login", x => x.Login);
 builder.Commands
     .WithGroup("account")
     .Add<TokenCommands>()

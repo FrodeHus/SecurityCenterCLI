@@ -15,19 +15,36 @@ builder.Services.AddTransient<DefenderApiService>();
 builder.Services.AddTransient<GraphService>();
 builder.Services.AddHttpClient();
 
+builder.Commands.Add<AccountCommands>().WithCommand("token", x => x.Login);
+builder.Commands
+    .WithGroup("account")
+    .Add<TokenCommands>()
+    .WithCommand("token", x => x.GetAccessToken)
+    .WithCommand("set-credentials", x => x.SetCredentials);
+var deviceGroup = builder.Commands
+    .WithGroup("device");
+
+deviceGroup.Add<DeviceCommands>()
+    .WithCommand("list", x => x.DeviceList);
+
+deviceGroup
+    .WithGroup("vulnerability")
+    .Add<DeviceCommands>()
+    .WithCommand("list", x => x.VulnerabilityList);
+
+deviceGroup
+    .WithGroup("recommendation")
+    .Add<DeviceCommands>()
+    .WithCommand("list", x => x.RecommendationList);
+
+builder
+    .Commands
+    .WithGroup("secure-score")
+    .Add<SecureScoreCommands>()
+    .WithCommand("list", x=> x.SecureScoreList)
+    .WithCommand("profiles", x => x.GetSecurityControlProfiles);
+
 var app = builder.Build();
 
-app.AddCommand(s => new AccountCommands(s.GetRequiredService<TokenClient>()));
-
-app.AddCommandGroup("account")
-        .AddCommand(s => new TokenCommands(s.GetRequiredService<TokenClient>(), s.GetRequiredService<Configuration>()));
-
-app.AddCommand(s => new ConfigCommands());
-
-app.AddCommandGroup("device")
-    .AddCommand(s => new DeviceCommands(s.GetRequiredService<DefenderApiService>()));
-
-app.AddCommandGroup("secure-score")
-    .AddCommand(s => new SecureScoreCommands(s.GetRequiredService<GraphService>()));
 
 app.Run();

@@ -17,22 +17,34 @@ namespace SecurityCenterCli.Authentication
                 return new Error(ErrorCode.CredentialNotSet, "Please set the credentials first");
             }
 
-            var cacheHelper = await MsalCacheHelper.CreateAsync(_configuration.TokenCache);
-
-            var client = PublicClientApplicationBuilder.Create(_configuration.Credential?.ClientId)
+            if (_configuration.Credential?.ClientSecret is null)
+            {
+                var cacheHelper = await MsalCacheHelper.CreateAsync(Configuration.TokenCache);
+                var client = PublicClientApplicationBuilder.Create(_configuration.Credential?.ClientId)
                                                .WithAuthority(AzureCloudInstance.AzurePublic, _configuration.Credential?.TenantId)
                                                .WithRedirectUri("http://localhost")
                                                .Build();
-            cacheHelper.RegisterCache(client.UserTokenCache);
+                cacheHelper.RegisterCache(client.UserTokenCache);
 
-            var accounts = await client.GetAccountsAsync();
-            if (!accounts.Any())
-            {
-                return new Error(ErrorCode.AuthenticationError, "Please login first");
+                var accounts = await client.GetAccountsAsync();
+                if (!accounts.Any())
+                {
+                    return new Error(ErrorCode.AuthenticationError, "Please login first");
+                }
+
+                var result = await client.AcquireTokenSilent(scopes, accounts.First()).ExecuteAsync();
+                return result.AccessToken;
             }
-
-            var result = await client.AcquireTokenSilent(scopes, accounts.First()).ExecuteAsync();
-            return result.AccessToken;
+            else
+            {
+                var client = ConfidentialClientApplicationBuilder.Create(_configuration.Credential?.ClientId)
+                                               .WithClientSecret(_configuration.Credential?.ClientSecret)
+                                               .WithAuthority(AzureCloudInstance.AzurePublic, _configuration.Credential?.TenantId)
+                                               .WithRedirectUri("http://localhost")
+                                               .Build();
+                var result = await client.AcquireTokenForClient(scopes).ExecuteAsync();
+                return result.AccessToken;
+            }
         }
 
         public async Task<Result<string>> GetAccessToken()
@@ -42,7 +54,7 @@ namespace SecurityCenterCli.Authentication
                 return new Error(ErrorCode.CredentialNotSet, "Please set the credentials first");
             }
 
-            var cacheHelper = await MsalCacheHelper.CreateAsync(_configuration.TokenCache);
+            var cacheHelper = await MsalCacheHelper.CreateAsync(Configuration.TokenCache);
             if (_configuration.Credential?.ClientSecret is null)
             {
                 var client = PublicClientApplicationBuilder.Create(_configuration.Credential?.ClientId)

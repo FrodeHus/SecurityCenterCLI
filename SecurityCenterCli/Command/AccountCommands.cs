@@ -6,16 +6,13 @@ namespace SecurityCenterCli.Command;
 internal class AccountCommands(TokenClient tokenClient)
 {
     private readonly TokenClient _tokenClient = tokenClient;
-
-    [Command("login", "Log in to Microsoft Security Center")]
-    public async Task Login()
+    public async Task<string> Login()
     {
         var result = await _tokenClient.GetAccessToken();
         if (result.IsFailure)
         {
-            Console.WriteLine(result.Error);
-            return;
+            return result.Error!.ToString();
         }
-        Console.WriteLine("Login successful");
+        return "Login successful";
     }
 }

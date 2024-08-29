@@ -15,14 +15,24 @@ public class Configuration
     public string AppSettingsFile => Path.Combine(ApplicationHome, "appsettings.json");
     public Credential? Credential { get; set; }
     [JsonIgnore]
-    public StorageCreationProperties TokenCache
+    public static StorageCreationProperties TokenCache
     {
         get
         {
-            var builder = new StorageCreationPropertiesBuilder("tokenCache", ApplicationHome);
-            builder.WithLinuxUnprotectedFile();
-            builder.WithMacKeyChain("SecurityCenterCLI", "tokenCache");
-            return builder.Build();
+            const string cacheSchemaName = "no.reothor.securitycentercli.tokencache";
+
+            var storage = new StorageCreationPropertiesBuilder("tokenCache", MsalCacheHelper.UserRootDirectory)
+                .WithMacKeyChain(
+                    serviceName: $"{cacheSchemaName}.service",
+                    accountName: $"{cacheSchemaName}.account")
+                .WithLinuxKeyring(
+                    schemaName: cacheSchemaName,
+                    collection: MsalCacheHelper.LinuxKeyRingDefaultCollection,
+                    secretLabel: "MSAL token cache for Security Center CLI",
+                    attribute1: new KeyValuePair<string, string>("Version", "1"),
+                    attribute2: new KeyValuePair<string, string>("Product", "SecurityCenterCLI"))
+                .Build();
+            return storage;
         }
     }
 
